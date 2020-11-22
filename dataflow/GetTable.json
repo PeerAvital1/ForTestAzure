@@ -1,0 +1,27 @@
+{
+	"name": "GetTable",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText1",
+						"type": "DatasetReference"
+					},
+					"name": "GetTable"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "FilterBetween1990To1991"
+				},
+				{
+					"name": "Aggregate"
+				}
+			],
+			"script": "source(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\t{Rotton Tomato} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> GetTable\nGetTable filter(toInteger(year) > 1990 ) ~> FilterBetween1990To1991\nFilterBetween1990To1991 aggregate(groupBy(year),\n\tAVGRating = avg(toInteger(Rating))) ~> Aggregate"
+		}
+	}
+}
